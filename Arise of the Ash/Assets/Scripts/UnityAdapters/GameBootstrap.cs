@@ -1,13 +1,15 @@
 using Core.Player;
-using Unity.Player;
+using UnityAdapters.Interaction;
+using UnityAdapters.Player;
 using UnityEngine;
 
-namespace Unity
+namespace UnityAdapters
 {
     public class GameBootstrap : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private PlayerController _playerController;
+        [SerializeField] private CameraController _cameraController;
         [Header("Start State")]
         [SerializeField] private bool _startWithOneLeg = true;
         private PlayerLimbs _playerLimbs;
@@ -15,18 +17,10 @@ namespace Unity
         {
             _playerLimbs = new PlayerLimbs();
             if (_startWithOneLeg)
-            {
                 _playerLimbs.Add(LimbType.LeftLeg);
-            }
-            _playerController.Init(_playerLimbs);
-        }
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Alpha1))
-            {
-                _playerLimbs.Add(LimbType.RightLeg);
-                Debug.Log("Добавлена правая нога!");
-            }
+            var detector = _playerController.GetComponent<InteractionDetector>();
+            _playerController.Init(_playerLimbs, detector);
+            _cameraController.Init(_playerLimbs);
         }
     }
 }

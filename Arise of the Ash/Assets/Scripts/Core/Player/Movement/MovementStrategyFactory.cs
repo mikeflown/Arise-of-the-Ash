@@ -1,5 +1,4 @@
 using Configs;
-using Core.Player;
 
 namespace Core.Player.Movement
 {
@@ -10,7 +9,7 @@ namespace Core.Player.Movement
         {
             _config = config;
         }
-        public IMovementStrategy Create(PlayerLimbs limbs)
+        public IMovementStrategy Create(Player.PlayerLimbs limbs)
         {
             if (limbs.HasBothLegs)
                 return new TwoLegsMovementStrategy(_config);
