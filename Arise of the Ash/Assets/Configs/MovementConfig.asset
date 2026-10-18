@@ -12,17 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: afb34a43e8fb92d48a83704ab41cae80, type: 3}
   m_Name: MovementConfig
   m_EditorClassIdentifier: Assembly-CSharp::Configs.MovementConfig
-  OneLegWalkSpeed: 1.9
-  OneLegAcceleration: 8
-  TwoLegsWalkSpeed: 4.3
+  OneLegHopInterval: 0.7
+  OneLegHopForce: 3.2
+  OneLegHopSpeed: 3.4
+  TwoLegsWalkSpeed: 3.5
   TwoLegsRunSpeed: 6.5
   TwoLegsAcceleration: 12
-  JumpForce: 8
+  JumpForce: 7.5
   FullBodyWalkSpeed: 4
   FullBodyRunSpeed: 7.5
   FullBodyAcceleration: 14
-  Gravity: -10
-  GroundCheckDistance: 0.25
-  GroundMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
+  Gravity: -20

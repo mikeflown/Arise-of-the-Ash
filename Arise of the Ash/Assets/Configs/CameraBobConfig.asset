@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b2853a3b7f695234cb522917d441a5fa, type: 3}
   m_Name: CameraBobConfig
   m_EditorClassIdentifier: Assembly-CSharp::Configs.CameraBobConfig
-  OneLegFrequency: 6
-  OneLegVerticalAmplitude: 0.34
-  OneLegSideAmplitude: 0.32
-  OneLegSmoothing: 9
+  OneLegHopInterval: 0.7
+  OneLegPush: 0.035
+  OneLegRise: 0.14
+  OneLegSide: 0.012
   TwoLegsWalkFrequency: 2.1
   TwoLegsWalkVerticalAmplitude: 0.07
   TwoLegsWalkSideAmplitude: 0.05
