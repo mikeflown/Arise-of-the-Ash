@@ -31,24 +31,23 @@ namespace UnityAdapters.Player
             if (detector != null)
             {
                 _interactionDetector = detector;
-                var context = new PlayerContext(limbs, transform, _controller);
-                _interactionDetector.Init(limbs, context);
+                _interactionDetector.Init(limbs, new PlayerContext(limbs, transform, _controller));
             }
+            GetComponent<PlayerItemHolder>()?.Init(limbs);
+            GetComponent<LimbDebugToggle>()?.Init(limbs);
         }
         private void RebuildStrategy()
         {
             _strategy = _factory.Create(_limbs);
-            Debug.Log($"[PlayerController] Strategy changed. Limbs: {_limbs.LimbCount}");
         }
         private void Update()
         {
-            if (_strategy == null || _inputReader == null) return;
+            if (_strategy == null || _inputReader == null)
+                return;
             var input = _inputReader.Current;
             _strategy.Tick(Time.deltaTime, in input, _controller, transform);
             if (_interactionDetector != null && input.InteractPressed)
-            {
                 _interactionDetector.TryInteract();
-            }
         }
         private void OnDestroy()
         {
