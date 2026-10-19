@@ -5,29 +5,31 @@ namespace UnityAdapters.UI
     public class MenuAudio : MonoBehaviour
     {
         [SerializeField] private AudioSource _musicSource;
-        [SerializeField] private AudioSource _sfxSource;
         [SerializeField] private AudioClip _hoverClip;
         [SerializeField] private AudioClip _clickClip;
         [SerializeField] private AudioClip _musicClip;
+        private AudioSource _uiSource;
         private void Awake()
         {
+            _uiSource = gameObject.AddComponent<AudioSource>();
+            _uiSource.playOnAwake = false;
+            _uiSource.loop = false;
+            _uiSource.spatialBlend = 0f;
             if (_musicSource != null && _musicClip != null)
             {
                 _musicSource.clip = _musicClip;
                 _musicSource.loop = true;
                 _musicSource.playOnAwake = false;
-                _musicSource.Play();
+                if (!_musicSource.isPlaying)
+                    _musicSource.Play();
             }
         }
-        public void PlayHover()
+        public void PlayHover() => Play(_hoverClip);
+        public void PlayClick() => Play(_clickClip);
+        private void Play(AudioClip clip)
         {
-            if (_sfxSource != null && _hoverClip != null)
-                _sfxSource.PlayOneShot(_hoverClip);
-        }
-        public void PlayClick()
-        {
-            if (_sfxSource != null && _clickClip != null)
-                _sfxSource.PlayOneShot(_clickClip);
+            if (clip != null)
+                _uiSource.PlayOneShot(clip);
         }
     }
 }

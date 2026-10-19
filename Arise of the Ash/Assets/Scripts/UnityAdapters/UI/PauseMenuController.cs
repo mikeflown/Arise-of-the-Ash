@@ -18,6 +18,8 @@ namespace UnityAdapters.UI
         [SerializeField] private Slider _fovSlider;
         [SerializeField] private Camera _playerCamera;
         [SerializeField] private AudioSource _ambient;
+        [SerializeField] private AudioClip _pauseClip;
+        private AudioSource _uiSource;
         [SerializeField] private Behaviour[] _disableWhilePaused;
         [SerializeField] private string _menuSceneName = "MainMenu";
         private bool _paused;
@@ -38,6 +40,11 @@ namespace UnityAdapters.UI
             _volumeSlider.onValueChanged.AddListener(OnVolumeChanged);
             _fovSlider.onValueChanged.AddListener(OnFovChanged);
             _pauseRoot.SetActive(false);
+            _uiSource = gameObject.AddComponent<AudioSource>();
+            _uiSource.playOnAwake = false;
+            _uiSource.ignoreListenerPause = true;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         private void Update()
         {
@@ -54,9 +61,16 @@ namespace UnityAdapters.UI
             return UnityEngine.InputSystem.Keyboard.current != null
                    && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame;
         }
+        private void LateUpdate()
+        {
+            if (_paused && _ambient != null && _ambient.isPlaying)
+                _ambient.Pause();
+        }
         private void Pause()
         {
             _paused = true;
+            if (_pauseClip != null)
+                _uiSource.PlayOneShot(_pauseClip);
             Time.timeScale = 0f;
             if (_ambient != null && _ambient.isPlaying)
                 _ambient.Pause();
