@@ -36,6 +36,15 @@ namespace Core.Player
             if (changed)
                 OnLimbsChanged?.Invoke();
         }
+        public void Toggle(LimbType limb)
+        {
+            if (!_limbs.Remove(limb))
+            {
+                _limbs.Add(limb);
+                OnLimbAdded?.Invoke(limb);
+            }
+            OnLimbsChanged?.Invoke();
+        }
         public void DebugAddAll()
         {
             AddRange(LimbType.LeftLeg, LimbType.RightLeg, LimbType.LeftArm, LimbType.RightArm);

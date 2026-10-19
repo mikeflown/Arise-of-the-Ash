@@ -6,41 +6,51 @@ namespace UnityAdapters.Interaction
 {
     public class InteractionDetector : MonoBehaviour
     {
-        [SerializeField] private float _interactionRadius = 2f;
+        [SerializeField] private float _interactionRadius = 2.5f;
         [SerializeField] private LayerMask _interactableLayer;
         [SerializeField] private Transform _cameraTransform;
         private PlayerLimbs _limbs;
         private PlayerContext _context;
         private IInteractable _currentInteractable;
+        private InteractableHighlight _highlight;
         public IInteractable CurrentInteractable => _currentInteractable;
         public event System.Action<IInteractable> OnInteractableChanged;
         public void Init(PlayerLimbs limbs, PlayerContext context)
         {
             _limbs = limbs;
             _context = context;
+
+            if (_cameraTransform == null && Camera.main != null)
+                _cameraTransform = Camera.main.transform;
         }
         private void Update()
         {
-            if (_limbs == null) return;
-            Collider[] colliders = Physics.OverlapSphere(transform.position, _interactionRadius, _interactableLayer);
-            IInteractable closest = null;
-            float closestDistance = float.MaxValue;
-            foreach (var col in colliders)
+            if (_limbs == null || _cameraTransform == null)
+                return;
+            IInteractable found = null;
+            InteractableHighlight highlight = null;
+            Ray ray = new Ray(_cameraTransform.position, _cameraTransform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, _interactionRadius, _interactableLayer, QueryTriggerInteraction.Collide))
             {
-                var proxy = col.GetComponent<InteractableProxy>();
-                if (proxy != null && proxy.Interactable.CanInteract(_limbs))
+                if (!hit.collider.transform.IsChildOf(transform))
                 {
-                    float distance = Vector3.Distance(transform.position, col.transform.position);
-                    if (distance < closestDistance)
+                    InteractableProxy proxy = hit.collider.GetComponentInParent<InteractableProxy>();
+                    if (proxy != null && proxy.Interactable != null && proxy.Interactable.CanInteract(_limbs))
                     {
-                        closestDistance = distance;
-                        closest = proxy.Interactable;
+                        found = proxy.Interactable;
+                        highlight = proxy.GetComponent<InteractableHighlight>();
                     }
                 }
             }
-            if (closest != _currentInteractable)
+            if (highlight != _highlight)
             {
-                _currentInteractable = closest;
+                _highlight?.SetHighlighted(false);
+                _highlight = highlight;
+                _highlight?.SetHighlighted(true);
+            }
+            if (found != _currentInteractable)
+            {
+                _currentInteractable = found;
                 OnInteractableChanged?.Invoke(_currentInteractable);
             }
         }
@@ -52,6 +62,16 @@ namespace UnityAdapters.Interaction
                 return true;
             }
             return false;
+        }
+        private void OnDisable()
+        {
+            _highlight?.SetHighlighted(false);
+            _highlight = null;
+            if (_currentInteractable != null)
+            {
+                _currentInteractable = null;
+                OnInteractableChanged?.Invoke(null);
+            }
         }
     }
 }

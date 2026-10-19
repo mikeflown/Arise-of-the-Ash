@@ -10,6 +10,7 @@ namespace UnityAdapters.UI
         [SerializeField] private Sprite _normalSprite;
         [SerializeField] private Sprite _hoverSprite;
         [SerializeField] private MenuAudio _audio;
+        [SerializeField] private MenuHoverArrow _arrow;
         private void Awake()
         {
             if (_image == null)
@@ -21,12 +22,13 @@ namespace UnityAdapters.UI
         {
             if (_image != null && _hoverSprite != null)
                 _image.sprite = _hoverSprite;
-
             _audio?.PlayHover();
+            _arrow?.Show((RectTransform)transform);
         }
         public void OnPointerExit(PointerEventData eventData)
         {
             SetNormal();
+            _arrow?.Hide((RectTransform)transform);
         }
         public void OnPointerClick(PointerEventData eventData)
         {
