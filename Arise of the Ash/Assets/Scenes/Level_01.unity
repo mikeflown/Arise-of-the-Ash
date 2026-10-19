@@ -826,6 +826,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3058857359008906838, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
       insertIndex: -1
       addedObject: {fileID: 349080713}
+    - targetCorrespondingSourceObject: {fileID: 3058857359008906838, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 349080716}
   m_SourcePrefab: {fileID: 100100000, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
 --- !u!1 &349080711 stripped
 GameObject:
@@ -850,6 +853,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityAdapters.Interaction.InteractableHighlight
   _highlight: {fileID: 0}
+--- !u!114 &349080716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349080711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a79cdb120bedca4a817420c32183367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityAdapters.Interaction.LimbDummy
+  _limb: 0
 --- !u!1 &367180403
 GameObject:
   m_ObjectHideFlags: 0
@@ -4082,6 +4098,7 @@ MonoBehaviour:
   _disableWhilePaused:
   - {fileID: 624196125}
   - {fileID: 194851246}
+  - {fileID: 624196121}
   - {fileID: 624196128}
   _menuSceneName: MainMenu
 --- !u!4 &1626261642
@@ -7673,9 +7690,21 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 541093538263391293, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3058857359008906838, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
       propertyPath: m_Name
       value: RightLeg_Pickup
+      objectReference: {fileID: 0}
+    - target: {fileID: 3058857359008906838, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 5411699460829309115, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7286494704146272331, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7717,6 +7746,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8265682069269320169, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 8951170950418968957, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -7727,6 +7764,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 3058857359008906838, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9013057621600014048}
+    - targetCorrespondingSourceObject: {fileID: 3058857359008906838, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 9013057621600014051}
   m_SourcePrefab: {fileID: 100100000, guid: 1e417e1774f6e2648a9a5c791e71fb19, type: 3}
 --- !u!4 &9013057621600014046 stripped
 Transform:
@@ -7751,6 +7791,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityAdapters.Interaction.InteractableHighlight
   _highlight: {fileID: 1658694186}
+--- !u!114 &9013057621600014051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9013057621600014047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a79cdb120bedca4a817420c32183367, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityAdapters.Interaction.LimbDummy
+  _limb: 1
 --- !u!1 &9014776604797280693
 GameObject:
   m_ObjectHideFlags: 0

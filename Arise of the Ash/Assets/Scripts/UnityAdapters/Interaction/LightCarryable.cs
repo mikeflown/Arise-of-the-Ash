@@ -28,12 +28,20 @@ namespace UnityAdapters.Interaction
         public void SetHeld(bool held)
         {
             IsHeld = held;
-            _body.isKinematic = held;
-            _body.useGravity = !held;
             foreach (Collider col in _colliders)
                 col.enabled = !held;
             if (held)
-                SetVelocity(Vector3.zero);
+            {
+                if (!_body.isKinematic)
+                    SetVelocity(Vector3.zero);
+                _body.isKinematic = true;
+                _body.useGravity = false;
+            }
+            else
+            {
+                _body.isKinematic = false;
+                _body.useGravity = true;
+            }
         }
         public void Throw(Vector3 velocity)
         {
