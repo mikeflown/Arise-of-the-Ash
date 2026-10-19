@@ -8,14 +8,18 @@ namespace UnityAdapters.Interaction
     {
         [SerializeField] private Transform _camera;
         [SerializeField] private LayerMask _lightLayer;
-        [SerializeField] private float _distance = 2.5f;
+        [SerializeField] private float _distance = 3.5f;
         [SerializeField] private float _holdDistance = 1.3f;
-        [SerializeField] private float _sideOffset = 0.38f;
-        [SerializeField] private float _downOffset = 0.18f;
+        [SerializeField] private float _sideOffset = 0.40f;
+        [SerializeField] private float _downOffset = 0.20f;
         [SerializeField] private float _throwForce = 9f;
+        [SerializeField] private float _followTime = 0.04f;
+        [SerializeField] private float _rotateSpeed = 18f;
         private PlayerLimbs _limbs;
         private LightCarryable _left;
         private LightCarryable _right;
+        private Vector3 _leftFollow;
+        private Vector3 _rightFollow;
         private InteractableHighlight _highlight;
         private void Awake()
         {
@@ -45,46 +49,53 @@ namespace UnityAdapters.Interaction
                 return;
             if (arm == LimbType.LeftArm && _left != null)
             {
-                Throw(ref _left);
+                Throw(ref _left, ref _leftFollow);
                 return;
             }
             if (arm == LimbType.RightArm && _right != null)
             {
-                Throw(ref _right);
+                Throw(ref _right, ref _rightFollow);
                 return;
             }
             if (aimed == null || aimed.IsHeld)
                 return;
             if (arm == LimbType.LeftArm)
-                Pickup(aimed, ref _left);
+                Pickup(aimed, ref _left, ref _leftFollow);
             else
-                Pickup(aimed, ref _right);
+                Pickup(aimed, ref _right, ref _rightFollow);
         }
-        private void Pickup(LightCarryable item, ref LightCarryable slot)
+        private void Pickup(LightCarryable item, ref LightCarryable slot, ref Vector3 follow)
         {
             item.SetHeld(true);
             slot = item;
+            follow = Vector3.zero;
         }
-        private void Throw(ref LightCarryable slot)
+        private void Throw(ref LightCarryable slot, ref Vector3 follow)
         {
             LightCarryable item = slot;
             slot = null;
+            follow = Vector3.zero;
             item.Throw(_camera.forward * _throwForce + Vector3.up * 0.6f);
         }
         private void LateUpdate()
         {
             if (_camera == null)
                 return;
-            Hold(_left, -_sideOffset);
-            Hold(_right, _sideOffset);
+            Hold(_left, -_sideOffset, ref _leftFollow);
+            Hold(_right, _sideOffset, ref _rightFollow);
         }
-        private void Hold(LightCarryable item, float side)
+        private void Hold(LightCarryable item, float side, ref Vector3 follow)
         {
             if (item == null)
                 return;
-            item.Body.MovePosition(_camera.position
-                + _camera.forward * _holdDistance + _camera.right * side - _camera.up * _downOffset);
-            item.Body.MoveRotation(_camera.rotation);
+            Vector3 target = _camera.position
+                + _camera.forward * _holdDistance
+                + _camera.right * side
+                - _camera.up * _downOffset;
+            item.transform.position = Vector3.SmoothDamp(
+                item.transform.position, target, ref follow, _followTime);
+            item.transform.rotation = Quaternion.Slerp(
+                item.transform.rotation, _camera.rotation, Time.deltaTime * _rotateSpeed);
         }
         private LightCarryable AimedItem()
         {

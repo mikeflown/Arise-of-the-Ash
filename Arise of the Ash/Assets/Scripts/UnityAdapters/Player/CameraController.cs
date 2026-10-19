@@ -9,6 +9,8 @@ namespace UnityAdapters.Player
         [SerializeField] private CameraBobConfig _config;
         [SerializeField] private Transform _cameraTransform;
         [SerializeField] private PlayerInputReader _inputReader;
+        [SerializeField] private float _clipPadding = 0.08f;
+        [SerializeField] private LayerMask _cameraCollision = ~0;
         private PlayerLimbs _limbs;
         private float _bobTimer;
         private Vector3 _originalLocalPosition;
@@ -42,6 +44,7 @@ namespace UnityAdapters.Player
                 return;
             HandleMouseLook();
             HandleHeadBob();
+            PreventCameraClip();
         }
         private void HandleMouseLook()
         {
@@ -129,6 +132,31 @@ namespace UnityAdapters.Player
             }
             float slow = (t - dropEnd) / (1f - dropEnd);
             return Mathf.Lerp(0.05f, 0.38f, slow * slow);
+        }
+        private void PreventCameraClip()
+        {
+            Camera cam = _cameraTransform.GetComponent<Camera>();
+            float near = cam != null ? cam.nearClipPlane : 0.1f;
+            float radius = Mathf.Max(0.05f, near * 0.8f);
+            Vector3 origin = transform.position + Vector3.up * _originalLocalPosition.y;
+            Vector3 desired = _cameraTransform.position;
+            Vector3 lookPoint = desired + _cameraTransform.forward * (near + _clipPadding);
+            Vector3 delta = lookPoint - origin;
+            float distance = delta.magnitude;
+            if (distance < 0.001f)
+                return;
+            int mask = _cameraCollision.value == 0 ? Physics.DefaultRaycastLayers : _cameraCollision.value;
+            int held = LayerMask.NameToLayer("Held");
+            if (held >= 0)
+                mask &= ~(1 << held);
+            mask &= ~(1 << gameObject.layer);
+            Vector3 direction = delta / distance;
+            if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit, distance, mask, QueryTriggerInteraction.Ignore))
+            {
+                float allowed = Mathf.Max(0.02f, hit.distance - near - _clipPadding);
+                float cameraDistance = Vector3.Distance(origin, desired);
+                _cameraTransform.position = origin + (desired - origin).normalized * Mathf.Min(cameraDistance, allowed);
+            }
         }
         private void OnDestroy()
         {
