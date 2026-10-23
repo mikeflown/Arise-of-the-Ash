@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afb34a43e8fb92d48a83704ab41cae80, type: 3}
+  m_Name: MovementConfig
+  m_EditorClassIdentifier: Assembly-CSharp::Configs.MovementConfig
+  OneLegHopInterval: 0.7
+  OneLegHopForce: 3.2
+  OneLegHopSpeed: 3.4
+  TwoLegsWalkSpeed: 3.5
+  TwoLegsRunSpeed: 6.5
+  TwoLegsAcceleration: 12
+  JumpForce: 7.5
+  FullBodyWalkSpeed: 4
+  FullBodyRunSpeed: 7.5
+  FullBodyAcceleration: 14
+  Gravity: -20
+  MaxWalkableSlope: 58
+  SlopeSlideSpeed: 6
+  WallSlideStrength: 4
+  MantleCheckDistance: 1.2
+  MantleMinHeight: 0.2
+  MantleMaxHeight: 1.4
+  MantleDuration: 0.3
+  MantleForwardOffset: 0.2
+  MantleLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  HeavyDragSpeed: 5
+  HeavyDragMaxDistance: 1
+  HeavyDragStopDistance: 1
