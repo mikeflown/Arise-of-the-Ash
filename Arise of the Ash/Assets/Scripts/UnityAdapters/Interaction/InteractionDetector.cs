@@ -6,7 +6,7 @@ namespace UnityAdapters.Interaction
 {
     public class InteractionDetector : MonoBehaviour
     {
-        [SerializeField] private float _interactionRadius = 2.5f;
+        [SerializeField] private float _interactionRadius = 3.5f;
         [SerializeField] private LayerMask _interactableLayer;
         [SerializeField] private Transform _cameraTransform;
         private PlayerLimbs _limbs;

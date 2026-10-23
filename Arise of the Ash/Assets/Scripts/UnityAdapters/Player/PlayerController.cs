@@ -17,10 +17,14 @@ namespace UnityAdapters.Player
         private PlayerLimbs _limbs;
         private IMovementStrategy _strategy;
         private MovementStrategyFactory _factory;
+        private PlayerHeavyDragHandler _heavyDrag;
+        private PlayerMantleHandler _mantle;
         public PlayerLimbs Limbs => _limbs;
         private void Awake()
         {
             _controller = GetComponent<CharacterController>();
+            _heavyDrag = GetComponent<PlayerHeavyDragHandler>();
+            _mantle = GetComponent<PlayerMantleHandler>();
         }
         public void Init(PlayerLimbs limbs, InteractionDetector detector = null)
         {
@@ -28,6 +32,8 @@ namespace UnityAdapters.Player
             _factory = new MovementStrategyFactory(_movementConfig);
             _limbs.OnLimbsChanged += RebuildStrategy;
             RebuildStrategy();
+            if (_movementConfig != null)
+                _controller.slopeLimit = _movementConfig.MaxWalkableSlope;
             if (detector != null)
             {
                 _interactionDetector = detector;
@@ -35,6 +41,8 @@ namespace UnityAdapters.Player
             }
             GetComponent<PlayerItemHolder>()?.Init(limbs);
             GetComponent<LimbDebugToggle>()?.Init(limbs);
+            _heavyDrag?.Init(limbs);
+            _mantle?.Init(limbs);
         }
         private void RebuildStrategy()
         {
@@ -44,6 +52,11 @@ namespace UnityAdapters.Player
         {
             if (_strategy == null || _inputReader == null)
                 return;
+            if ((_heavyDrag != null && _heavyDrag.IsDragging) ||
+                (_mantle != null && _mantle.IsMantling))
+            {
+                return;
+            }
             var input = _inputReader.Current;
             _strategy.Tick(Time.deltaTime, in input, _controller, transform);
             if (_interactionDetector != null && input.InteractPressed)

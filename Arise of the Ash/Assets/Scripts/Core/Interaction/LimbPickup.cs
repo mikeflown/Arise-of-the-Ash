@@ -9,7 +9,7 @@ namespace Core.Interaction
         private readonly LimbType _limbType;
         private readonly GameObject _gameObjectToDestroy;
         private readonly Action<LimbType> _onPickedUp;
-        public string InteractionPrompt => $"Подобрать {_limbType}";
+        public string InteractionPrompt => $"Интегрировать конечность E";
         public LimbPickup(LimbType limbType, GameObject gameObjectToDestroy, Action<LimbType> onPickedUp = null)
         {
             _limbType = limbType;

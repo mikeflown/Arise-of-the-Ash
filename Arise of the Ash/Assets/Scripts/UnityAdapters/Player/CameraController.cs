@@ -19,12 +19,17 @@ namespace UnityAdapters.Player
         private float _currentFrequency;
         private float _currentSmoothing;
         private float _xRotation;
+        private bool _lookEnabled = true;
         public void Init(PlayerLimbs limbs)
         {
             _limbs = limbs;
             _originalLocalPosition = _cameraTransform.localPosition;
             _limbs.OnLimbsChanged += UpdateBobParameters;
             UpdateBobParameters();
+        }
+        public void SetLookEnabled(bool enabled)
+        {
+            _lookEnabled = enabled;
         }
         private void UpdateBobParameters()
         {
@@ -48,10 +53,13 @@ namespace UnityAdapters.Player
         }
         private void HandleMouseLook()
         {
+            if (!_lookEnabled)
+                return;
             Vector2 lookInput = _inputReader.Current.Look * _config.MouseSensitivity;
             _xRotation -= lookInput.y;
             _xRotation = Mathf.Clamp(_xRotation, -80f, 80f);
             transform.Rotate(Vector3.up * lookInput.x);
+            _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
         }
         private void HandleHeadBob()
         {
@@ -76,21 +84,21 @@ namespace UnityAdapters.Player
                 _currentSideAmp = _config.TwoLegsWalkSideAmplitude;
                 _currentSmoothing = _config.TwoLegsWalkSmoothing;
             }
-            if (!isMoving)
+            if (isMoving)
+            {
+                _bobTimer += Time.deltaTime * _currentFrequency;
+                float vertical = Mathf.Sin(_bobTimer * Mathf.PI * 2f) * _currentVerticalAmp;
+                float side = Mathf.Cos(_bobTimer * Mathf.PI) * _currentSideAmp;
+                Vector3 target = _originalLocalPosition + new Vector3(side, vertical, 0f);
+                _cameraTransform.localPosition = Vector3.Lerp(
+                    _cameraTransform.localPosition, target, Time.deltaTime * _currentSmoothing);
+            }
+            else
             {
                 _bobTimer = 0f;
                 _cameraTransform.localPosition = Vector3.Lerp(
                     _cameraTransform.localPosition, _originalLocalPosition, Time.deltaTime * _currentSmoothing);
-                _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-                return;
             }
-            _bobTimer += Time.deltaTime * _currentFrequency;
-            float vertical = Mathf.Sin(_bobTimer) * _currentVerticalAmp;
-            float side = Mathf.Sin(_bobTimer * 0.5f) * _currentSideAmp;
-            Vector3 target = _originalLocalPosition + new Vector3(side, vertical, 0f);
-            _cameraTransform.localPosition = Vector3.Lerp(
-                _cameraTransform.localPosition, target, Time.deltaTime * _currentSmoothing);
-            _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
         }
         private void HandleOneLegCamera(bool isMoving)
         {
@@ -99,7 +107,6 @@ namespace UnityAdapters.Player
                 _bobTimer = 0f;
                 _cameraTransform.localPosition = Vector3.Lerp(
                     _cameraTransform.localPosition, _originalLocalPosition, Time.deltaTime * 8f);
-                _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
                 return;
             }
             _bobTimer += Time.deltaTime;
@@ -107,8 +114,9 @@ namespace UnityAdapters.Player
             float t = Mathf.Repeat(_bobTimer, interval) / interval;
             float vertical = SampleOneLegCycle(t) * _config.OneLegRise;
             float side = Mathf.Sin(t * Mathf.PI * 2f) * _config.OneLegSide;
-            _cameraTransform.localPosition = _originalLocalPosition + new Vector3(side, vertical, 0f);
-            _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
+            Vector3 target = _originalLocalPosition + new Vector3(side, vertical, 0f);
+            _cameraTransform.localPosition = Vector3.Lerp(
+                _cameraTransform.localPosition, target, Time.deltaTime * 12f);
         }
         private float SampleOneLegCycle(float t)
         {

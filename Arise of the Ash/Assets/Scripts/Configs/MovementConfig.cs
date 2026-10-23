@@ -20,5 +20,23 @@ namespace Configs
         public float FullBodyAcceleration = 14f;
         [Header("Common")]
         public float Gravity = -20f;
+        [Header("Slope / Walls")]
+        [Tooltip("Максимальный угол поверхности, по которой можно ходить (градусы). Выше — соскальзывание.")]
+        public float MaxWalkableSlope = 45f;
+        [Tooltip("Скорость соскальзывания со склонов круче MaxWalkableSlope")]
+        public float SlopeSlideSpeed = 6f;
+        [Tooltip("Сила отталкивания от почти вертикальных стен")]
+        public float WallSlideStrength = 8f;
+        [Header("Mantle (подтягивание)")]
+        public float MantleCheckDistance = 0.55f;
+        public float MantleMinHeight = 0.35f;
+        public float MantleMaxHeight = 1.35f;
+        public float MantleDuration = 0.55f;
+        public float MantleForwardOffset = 0.35f;
+        public LayerMask MantleLayer = ~0;
+        [Header("Heavy Drag")]
+        public float HeavyDragSpeed = 1.6f;
+        public float HeavyDragMaxDistance = 2.2f;
+        public float HeavyDragStopDistance = 0.9f;
     }
 }

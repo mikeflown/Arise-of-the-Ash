@@ -15,7 +15,6 @@ namespace UnityAdapters.UI
         {
             if (_image == null)
                 _image = GetComponent<Image>();
-
             SetNormal();
         }
         public void OnPointerEnter(PointerEventData eventData)
