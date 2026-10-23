@@ -23,17 +23,17 @@ MonoBehaviour:
   FullBodyRunSpeed: 7.5
   FullBodyAcceleration: 14
   Gravity: -20
-  MaxWalkableSlope: 45
+  MaxWalkableSlope: 58
   SlopeSlideSpeed: 6
-  WallSlideStrength: 8
-  MantleCheckDistance: 0.55
-  MantleMinHeight: 0.35
-  MantleMaxHeight: 1.35
-  MantleDuration: 0.55
-  MantleForwardOffset: 0.35
+  WallSlideStrength: 4
+  MantleCheckDistance: 1.2
+  MantleMinHeight: 0.2
+  MantleMaxHeight: 1.4
+  MantleDuration: 0.3
+  MantleForwardOffset: 0.2
   MantleLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
-  HeavyDragSpeed: 1.6
-  HeavyDragMaxDistance: 2.2
-  HeavyDragStopDistance: 0.9
+    m_Bits: 1
+  HeavyDragSpeed: 5
+  HeavyDragMaxDistance: 1
+  HeavyDragStopDistance: 1

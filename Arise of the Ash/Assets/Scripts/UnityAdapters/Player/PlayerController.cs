@@ -22,17 +22,16 @@ namespace UnityAdapters.Player
         public PlayerLimbs Limbs => _limbs;
         private void Awake()
         {
-            _controller = GetComponent<CharacterController>();
-            _heavyDrag = GetComponent<PlayerHeavyDragHandler>();
-            _mantle = GetComponent<PlayerMantleHandler>();
+            CacheComponents();
         }
         public void Init(PlayerLimbs limbs, InteractionDetector detector = null)
         {
+            CacheComponents();
             _limbs = limbs;
             _factory = new MovementStrategyFactory(_movementConfig);
             _limbs.OnLimbsChanged += RebuildStrategy;
             RebuildStrategy();
-            if (_movementConfig != null)
+            if (_movementConfig != null && _controller != null)
                 _controller.slopeLimit = _movementConfig.MaxWalkableSlope;
             if (detector != null)
             {
@@ -43,6 +42,15 @@ namespace UnityAdapters.Player
             GetComponent<LimbDebugToggle>()?.Init(limbs);
             _heavyDrag?.Init(limbs);
             _mantle?.Init(limbs);
+        }
+        private void CacheComponents()
+        {
+            if (_controller == null)
+                _controller = GetComponent<CharacterController>();
+            if (_heavyDrag == null)
+                _heavyDrag = GetComponent<PlayerHeavyDragHandler>();
+            if (_mantle == null)
+                _mantle = GetComponent<PlayerMantleHandler>();
         }
         private void RebuildStrategy()
         {

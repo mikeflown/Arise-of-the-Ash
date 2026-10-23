@@ -21,6 +21,9 @@ namespace UnityAdapters.Interaction
         private Vector3 _leftFollow;
         private Vector3 _rightFollow;
         private InteractableHighlight _highlight;
+        public bool IsLeftHandFree => _left == null;
+        public bool IsRightHandFree => _right == null;
+        public bool AreBothHandsFree => _left == null && _right == null;
         private void Awake()
         {
             if (_camera == null && Camera.main != null)
@@ -34,35 +37,32 @@ namespace UnityAdapters.Interaction
         {
             if (_limbs == null || _camera == null || Time.timeScale == 0f)
                 return;
-            LightCarryable aimed = AimedItem();
-            UpdateHighlight(aimed);
             if (Mouse.current == null)
                 return;
-            if (Mouse.current.leftButton.wasPressedThisFrame)
-                UseHand(LimbType.LeftArm, aimed);
-            if (Mouse.current.rightButton.wasPressedThisFrame)
-                UseHand(LimbType.RightArm, aimed);
+            LightCarryable aimed = AimedItem();
+            UpdateHighlight(aimed);
+            UpdateHand(LimbType.LeftArm, Mouse.current.leftButton.isPressed, aimed, ref _left, ref _leftFollow);
+            UpdateHand(LimbType.RightArm, Mouse.current.rightButton.isPressed, aimed, ref _right, ref _rightFollow);
         }
-        private void UseHand(LimbType arm, LightCarryable aimed)
+        private void UpdateHand(
+            LimbType arm, bool buttonHeld, LightCarryable aimed, ref LightCarryable slot, ref Vector3 follow)
         {
             if (!_limbs.Has(arm))
-                return;
-            if (arm == LimbType.LeftArm && _left != null)
             {
-                Throw(ref _left, ref _leftFollow);
+                if (slot != null)
+                    Drop(ref slot, ref follow);
                 return;
             }
-            if (arm == LimbType.RightArm && _right != null)
+            if (buttonHeld)
             {
-                Throw(ref _right, ref _rightFollow);
-                return;
+                if (slot == null && aimed != null && !aimed.IsHeld)
+                    Pickup(aimed, ref slot, ref follow);
             }
-            if (aimed == null || aimed.IsHeld)
-                return;
-            if (arm == LimbType.LeftArm)
-                Pickup(aimed, ref _left, ref _leftFollow);
             else
-                Pickup(aimed, ref _right, ref _rightFollow);
+            {
+                if (slot != null)
+                    Throw(ref slot, ref follow);
+            }
         }
         private void Pickup(LightCarryable item, ref LightCarryable slot, ref Vector3 follow)
         {
@@ -76,6 +76,13 @@ namespace UnityAdapters.Interaction
             slot = null;
             follow = Vector3.zero;
             item.Throw(_camera.forward * _throwForce + Vector3.up * 0.6f);
+        }
+        private void Drop(ref LightCarryable slot, ref Vector3 follow)
+        {
+            LightCarryable item = slot;
+            slot = null;
+            follow = Vector3.zero;
+            item.Throw(Vector3.zero);
         }
         private void LateUpdate()
         {
@@ -109,8 +116,10 @@ namespace UnityAdapters.Interaction
             InteractableHighlight next = null;
             bool canTake = aimed != null
                 && !aimed.IsHeld
-                && (_limbs.Has(LimbType.LeftArm) && _left == null
-                    || _limbs.Has(LimbType.RightArm) && _right == null);
+                && (
+                    (_limbs.Has(LimbType.LeftArm) && _left == null) ||
+                    (_limbs.Has(LimbType.RightArm) && _right == null)
+                );
             if (canTake)
                 next = aimed.GetComponent<InteractableHighlight>();
             if (next == _highlight)
@@ -123,6 +132,10 @@ namespace UnityAdapters.Interaction
         {
             _highlight?.SetHighlighted(false);
             _highlight = null;
+            if (_left != null)
+                Drop(ref _left, ref _leftFollow);
+            if (_right != null)
+                Drop(ref _right, ref _rightFollow);
         }
     }
 }

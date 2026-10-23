@@ -19,7 +19,6 @@ namespace UnityAdapters.Interaction
         {
             _limbs = limbs;
             _context = context;
-
             if (_cameraTransform == null && Camera.main != null)
                 _cameraTransform = Camera.main.transform;
         }
@@ -38,7 +37,16 @@ namespace UnityAdapters.Interaction
                     if (proxy != null && proxy.Interactable != null && proxy.Interactable.CanInteract(_limbs))
                     {
                         found = proxy.Interactable;
-                        highlight = proxy.GetComponent<InteractableHighlight>();
+                        highlight = proxy.GetComponentInParent<InteractableHighlight>();
+                    }
+                    else
+                    {
+                        InteractableBridge bridge = hit.collider.GetComponentInParent<InteractableBridge>();
+                        if (bridge != null && bridge.Interactable != null && bridge.Interactable.CanInteract(_limbs))
+                        {
+                            found = bridge.Interactable;
+                            highlight = bridge.GetComponentInParent<InteractableHighlight>();
+                        }
                     }
                 }
             }
